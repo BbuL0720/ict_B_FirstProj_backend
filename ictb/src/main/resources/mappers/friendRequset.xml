@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.co.ictb.ictb.dao.FriendRequestDao">
+
+<select id="selectAllExceptMe" resultType="memvo">
+select * from member where mid !=#{mid}
+</select>
+<insert id="sendRequest">
+insert into friend_req (frid,req_id,receiver_id) values(friend_req_seq.nextval,#{req_id},#{receiver_id})
+</insert>
+
+<select id="getPending" resultType="frvo">
+select * from friend_req where receiver_id = #{mid} and status = 'pending'
+</select>
+
+<update id="updateStatus">
+update friend_req set status = #{status} where frid = #{frid}
+</update>
+
+<select id="getFriends" resultType="memvo">
+select m.*
+from friend_req f
+join member m on f.req_id = m.mid
+where f.receiver_id = #{mid} and f.status = 'accepted'
+union
+select m.*
+from friend_req f
+join member m on f.receiver_id = m.mid
+where f.req_id = #{mid} and f.status = 'accepted'
+</select>
+
+<select id="getSendRequests" resultType="frvo">
+select * from friend_req where req_id = #{mid}
+</select>
+
+<select id="checkRequestExists" resultType="int">
+select count(*) from friend_req where req_id = #{req_id} and receiver_id = #{receiver_id}
+</select>
+
+<update id="resendRequest">
+update friend_req set status = 'pending' , frdate = sysdate where req_id = #{req_id} and receiver_id = #{receiver_id}
+</update>
+
+</mapper>
+
+
+
+

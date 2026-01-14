@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.co.ictb.ictb.dao.MemberDAO">
+
+<insert id="insertMember" parameterType="memvo">
+insert into member VALUES(member_num_seq.Nextval, #{mname},#{mid},#{password},#{email},sysdate,'#000000')
+</insert>
+
+<select id="countByEmail" parameterType="string" resultType="int">
+select count(*) cnt from member where email = #{email}
+</select>
+
+<select id="useCheckEmail" parameterType="string" resultType="string">
+select email from member where email = #{email}
+</select>
+
+<select id="memberInfo" parameterType="memvo" resultType="int">
+select count(*) cnt from member where mid = #{mid} and mname = #{mname} and email = #{email}
+</select>
+
+<select id="checkId" parameterType="string" resultType="int">
+select count(*) cnt from member where mid = #{mid}
+</select>
+<update id="changePassword" parameterType="memvo">
+      update member set password=#{password} where mid=#{mid}
+  </update>
+  
+  <update id="changeColor" parameterType="memvo">
+      update member set color=#{color} where mid=#{mid}
+  </update>
+  
+  <select id="mypageInfo" parameterType="memvo" resultType="map">
+    SELECT mname,mid,email,password,color FROM MEMBER WHERE mid=#{mid}
+  </select>
+  
+</mapper>
+
+
+
+
