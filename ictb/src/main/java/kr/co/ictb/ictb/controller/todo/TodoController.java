@@ -1,4 +1,4 @@
-package kr.co.ictb.ictb.todo;
+package kr.co.ictb.ictb.controller.todo;
 
 import java.util.List;
 
@@ -50,7 +50,7 @@ public class TodoController {
 		return todoService.friendTodoInfo(mid);
 	}
 	@PostMapping("/selectMyfriends")
-	public List<MemberVO> selectMyfriends(HttpSession session, @RequestBody List<String> mid ){
+	public List<MemberVO> selectMyfriends(@RequestBody List<String> mid ){
 		System.out.println("시작");
 		for (String e : mid) {
 			System.out.println( " mid = " + e);

@@ -1,4 +1,4 @@
-package kr.co.ictb.ictb.todo;
+package kr.co.ictb.ictb.controller.todo;
 
 import java.util.List;
 
