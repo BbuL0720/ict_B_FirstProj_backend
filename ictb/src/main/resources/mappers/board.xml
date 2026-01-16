@@ -30,7 +30,7 @@
  	</select>
  	
  	<insert id="add" parameterType="bvo">
- 		INSERT INTO BOARD VALUES(board_num_pk.NEXTVAL, #{category}, #{title}, #{writer}, sysdate, #{image, jdbcType=VARCHAR}, #{content})
+ 		INSERT INTO BOARD VALUES(board_num_seq.NEXTVAL, #{category}, #{title}, #{writer}, sysdate, #{image, jdbcType=VARCHAR}, #{content})
  	</insert>
  	
  	<select id="total" resultType="int" parameterType="map">

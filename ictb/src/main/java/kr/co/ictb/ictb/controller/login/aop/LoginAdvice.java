@@ -42,7 +42,7 @@ public class LoginAdvice {
 				System.out.println("reip : " + lvo.getReip());
 				System.out.println("status : " + lvo.getStatus());
 				System.out.println("-----------------------------------");
-				myLogDao.addLoginLoggin(lvo);
+//				myLogDao.addLoginLoggin(lvo);
 
 			}
 		}
