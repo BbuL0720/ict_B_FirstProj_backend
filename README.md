@@ -127,5 +127,27 @@ CREATE TABLE todo(
     description VARCHAR2(200) NOT NULL,            -- 할 일 상세 내용
     CONSTRAINT todo_tnum_FK FOREIGN KEY(tid) REFERENCES MEMBER(mid)
 );
+/*******************************************************************************
+ * 5. 다이어리 시스템 (Diary & Gallery)
+ *******************************************************************************/
+
+-- [diarylist] 사용자의 다이어리 게시글 기본 정보 저장소
+CREATE TABLE diarylist (
+    num NUMBER           CONSTRAINT diarylist_num_pk PRIMARY KEY, -- 다이어리 고유 번호 (PK)
+    writer VARCHAR2(10),                                          -- 작성자 아이디 (Member 참조)
+    udate DATE,                                                   -- 다이어리 작성/수정일
+    CONSTRAINT diarylist_writer_FK FOREIGN KEY(writer) REFERENCES MEMBER(mid)
+);
+
+-- diarylist의 num 번호 생성을 위한 시퀀스
+CREATE SEQUENCE diarylist_seq INCREMENT BY 1 START WITH 1;
+
+-- [diarypages] 다이어리별 상세 페이지 및 이미지 관리 (1:N)
+CREATE TABLE diarypages (
+    dnum NUMBER,                -- 부모 다이어리 번호 (FK)
+    image VARCHAR2(250) NOT NULL, -- 저장된 다이어리 이미지 경로 및 파일명
+    CONTENT VARCHAR2(600),      -- 해당 페이지의 일기 본문 내용
+    CONSTRAINT diarypages_dnum_FK FOREIGN KEY(dnum) REFERENCES diarylist(num) ON DELETE CASCADE
+);
 ```
 </details>
