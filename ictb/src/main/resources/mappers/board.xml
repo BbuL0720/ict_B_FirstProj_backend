@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ <mapper namespace="kr.co.ictb.ictb.dao.BoardDao">
+ 	<select id="list" resultType="bvo" parameterType="map">
+ 		SELECT bnum, title, writer, udate FROM (SELECT bnum, title, writer, udate, ROW_NUMBER() OVER (ORDER BY bnum desc) AS rn FROM BOARD WHERE category=#{category}
+ 		<if test="searchType != null and searchValue != null">
+ 			AND
+ 			<choose>
+ 				<when test="searchType == 1">
+ 					(title like '%'|| #{searchValue} ||'%')
+ 				</when>
+ 				<when test="searchType == 2">
+ 					(content like '%'|| #{searchValue} ||'%')
+ 				</when>
+ 				<when test="searchType == 3">
+ 					(title like '%'|| #{searchValue} ||'%' or content like '%'|| #{searchValue} ||'%')
+ 				</when>
+ 				<when test="searchType == 4">
+ 					(writer like '%'|| #{searchValue} ||'%')
+ 				</when>
+ 			</choose>
+ 		</if>
+ 		) WHERE rn BETWEEN #{startBoard} AND #{endBoard}
+ 	</select>
+ 	
+ 	<select id="detail" resultType="bvo" parameterType="int">
+ 		SELECT title, writer, udate, image, CONTENT FROM BOARD WHERE bnum=#{num}
+ 	</select>
+ 	
+ 	<insert id="add" parameterType="bvo">
+ 		INSERT INTO BOARD VALUES(board_num_pk.NEXTVAL, #{category}, #{title}, #{writer}, sysdate, #{image, jdbcType=VARCHAR}, #{content})
+ 	</insert>
+ 	
+ 	<select id="total" resultType="int" parameterType="map">
+ 		SELECT COUNT(*) FROM BOARD WHERE category=#{category}
+ 		<if test="searchType != null and searchValue != null">
+ 			 AND
+ 			 <choose>
+ 				<when test="searchType == 1">
+ 					(title like '%'|| #{searchValue} ||'%')
+ 				</when>
+ 				<when test="searchType == 2">
+ 					(content like '%'|| #{searchValue} ||'%')
+ 				</when>
+ 				<when test="searchType == 3">
+ 					(title like '%'|| #{searchValue} ||'%' or content like '%'|| #{searchValue} ||'%')
+ 				</when>
+ 				<when test="searchType == 4">
+ 					(writer like '%'|| #{searchValue} ||'%')
+ 				</when>
+ 			</choose>
+ 		</if>
+ 	</select>
+ 	
+ 	<delete id="delete" parameterType="int">
+ 		DELETE BOARD WHERE bnum=#{num}
+ 	</delete>
+ </mapper>

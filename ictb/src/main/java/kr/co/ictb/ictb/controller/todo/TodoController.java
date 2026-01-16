@@ -51,9 +51,6 @@ public class TodoController {
 	@PostMapping("/selectMyfriends")
 	public List<MemberVO> selectMyfriends(@RequestBody List<String> mid ){
 		System.out.println("시작");
-		for (String e : mid) {
-			System.out.println( " mid = " + e);
-		}
 		return todoService.selectMyfriends(mid);
 	}
 	
