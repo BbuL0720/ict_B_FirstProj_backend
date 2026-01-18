@@ -116,4 +116,9 @@ public class BoardController {
 		boardCommService.add(vo);
 		return ResponseEntity.ok().body("댓글 작성 성공");
 	}
+
+	@PostMapping("/homeboard")
+	public List<Map<String, Object>> homeboard() {
+		return boardService.homeboard();
+	}
 }

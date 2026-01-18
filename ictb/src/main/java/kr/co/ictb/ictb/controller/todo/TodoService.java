@@ -1,6 +1,7 @@
 package kr.co.ictb.ictb.controller.todo;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -33,6 +34,9 @@ public class TodoService {
 	}
 	public List<MemberVO> selectMyfriends(List<String> mid){
 		return todoDao.selectMyfriends(mid);
+	}
+	public List<Map<String, Object>>hometodo(String tid){
+		return todoDao.hometodo(tid);
 	}
 	
 }

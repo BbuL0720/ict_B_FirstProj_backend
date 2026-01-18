@@ -29,4 +29,7 @@ public class BoardService {
 	public int total(Map<String, String> map) {
 		return boardDao.total(map);
 	}
+	public List<Map<String, Object>> homeboard() {
+		return  boardDao.homeboard();
+	}
 }

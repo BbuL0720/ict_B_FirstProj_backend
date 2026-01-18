@@ -1,6 +1,7 @@
 package kr.co.ictb.ictb.dao;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -17,5 +18,6 @@ public interface TodoDao {
 	public void editTodo(TodoVO vo);
 	public List<TodoVO> friendTodoInfo(@Param("list") List<String> list);
 	public List<MemberVO> selectMyfriends(@Param("list") List<String> list);
+	public List<Map<String,Object>> hometodo (String tid);
 	
 }

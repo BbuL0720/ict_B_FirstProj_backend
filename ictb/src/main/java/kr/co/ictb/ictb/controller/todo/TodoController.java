@@ -1,6 +1,7 @@
 package kr.co.ictb.ictb.controller.todo;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -53,5 +54,12 @@ public class TodoController {
 		System.out.println("시작");
 		return todoService.selectMyfriends(mid);
 	}
-	
+
+	@PostMapping("/hometodo")
+	public List<Map<String,Object>> hometodo(@RequestBody TodoVO vo){
+		return todoService.hometodo(vo.getTid());
+	}
+
+
+
 }

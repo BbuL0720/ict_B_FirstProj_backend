@@ -18,9 +18,6 @@ public class LoginAdvice {
 //		login 성공했을때(세션) => 로그 저장 == (after)
 //		logout 세션 삭제전에 => 로그 저장 == (before)
 //		두개 합치면 around
-	@Autowired
-	private MyLogDao myLogDao;
-
 	private void createLoggin(String methodName, Object[] fd, ProceedingJoinPoint jp, String status) {
 		MyLoginLoggerVO lvo = new MyLoginLoggerVO();
 //		첫번쨰 매변수 등의 규칙을 정해놓으면(다른 매개변수와 같게 만들면) 배열의 index로 구분이 가능
@@ -42,7 +39,6 @@ public class LoginAdvice {
 				System.out.println("reip : " + lvo.getReip());
 				System.out.println("status : " + lvo.getStatus());
 				System.out.println("-----------------------------------");
-//				myLogDao.addLoginLoggin(lvo);
 
 			}
 		}

@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 @Getter
 public class SurveyContentVO {
-	private String surveytype;
-	private String surveytitle;
-	private int surveycnt;
+    private String surveytype;
+    private String surveytitle;
+    private int surveycnt;
 }

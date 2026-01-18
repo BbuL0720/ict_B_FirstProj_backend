@@ -11,13 +11,15 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import kr.co.ictb.ictb.controller.survey.SurveyService;
 import kr.co.ictb.ictb.vo.SurveyVO;
-
+import oracle.jdbc.proxy.annotation.Post;
 
 @RestController
-@RequestMapping("/api/survey")
+@RequestMapping("/survey")
 public class SurveyController {
 	@Autowired
 	private SurveyService surveyService;
@@ -40,9 +42,10 @@ public class SurveyController {
 		}
 	}
 
-	@GetMapping("/result/{num}")
-	public ResponseEntity<SurveyVO> getSurveyResult(@PathVariable("num") int num) {
+	@GetMapping("/detail")
+	public ResponseEntity<SurveyVO> getSurveyResult(@RequestParam("snum") int num) {
 		SurveyVO surveyVO = surveyService.findBySNUM(num);
+		System.out.println("surveyResult: "+num);
 		if (surveyVO != null) {
 			return ResponseEntity.ok(surveyVO);
 		} else {
@@ -62,17 +65,35 @@ public class SurveyController {
 
 	@PostMapping("/updateCount")
 	public ResponseEntity<String> incrementSurveyCount(@RequestBody Map<String, Object> payload) {
-		int subcode = (int) payload.get("subcode");
+		int snum = Integer.parseInt(String.valueOf(payload.get("snum")));
+		int mnum = Integer.parseInt(String.valueOf(payload.get("mnum")));
 		String surveytype = (String) payload.get("surveytype");
-
-		System.out.println("subcode: " + subcode);
+		
+		String result = surveyService.incrementSurveyCount(snum, mnum, surveytype);
+		System.out.println("subcode: " + snum);
+		System.out.println("mnum: " + mnum);
 		System.out.println("surveytype: " + surveytype);
 
 		try {
-			surveyService.incrementSurveyCount(subcode, surveytype);
-			return ResponseEntity.ok("투표 성공");
+			if ("Vote Successful".equals(result)) {
+				return ResponseEntity.ok("투표 성공");
+			} else {
+				return ResponseEntity.ok("기참여자");
+			}
+			
 		} catch (Exception e) {
+			e.printStackTrace();
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error");
 		}
+	}
+	
+	@GetMapping("/finishSurvey")
+	public void finishSurvey(@RequestParam("snum") int snum) {
+		surveyService.finishSurvey(snum);
+	}
+	
+	@GetMapping("/deleteSurvey")
+	public void deleteSurvey(@RequestParam("snum") int snum) {
+		surveyService.deleteSurvey(snum);
 	}
 }

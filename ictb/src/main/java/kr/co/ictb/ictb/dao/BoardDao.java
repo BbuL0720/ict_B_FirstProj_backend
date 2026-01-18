@@ -14,4 +14,5 @@ public interface BoardDao {
 	void add(BoardVO vo);
 	void delete(int num);
 	int total(Map<String, String> map);
+	List<Map<String, Object>> homeboard();
 }

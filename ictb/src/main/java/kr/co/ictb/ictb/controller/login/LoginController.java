@@ -29,6 +29,7 @@ public class LoginController {
 			if(cnt == 1) {
 				System.out.println("세션 처리 완료");
 				vo.setMname(result.get("MNAME").toString());
+				vo.setMnum(Integer.parseInt(result.get("MNUM").toString()));
 				vo.setColor(result.get("COLOR").toString());
 				session.setAttribute("loginMember", vo);
 				System.out.println(vo.getMname());

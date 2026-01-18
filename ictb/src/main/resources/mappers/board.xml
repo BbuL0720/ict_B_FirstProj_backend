@@ -57,4 +57,9 @@
  	<delete id="delete" parameterType="int">
  		DELETE BOARD WHERE bnum=#{num}
  	</delete>
+
+	<select id="homeboard" resultType="map">
+		SELECT BNUM, TITLE ,to_char(udate, 'YYYY-MM-DD')as udate FROM BOARD WHERE CATEGORY =  'free' ORDER BY UDATE DESC FETCH FIRST 4 ROWS ONLY
+	</select>
+
  </mapper>

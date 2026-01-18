@@ -3,8 +3,8 @@ package kr.co.ictb.ictb.dao;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
-import io.lettuce.core.dynamic.annotation.Param;
 import kr.co.ictb.ictb.vo.SurveyContentVO;
 import kr.co.ictb.ictb.vo.SurveyResultVO;
 import kr.co.ictb.ictb.vo.SurveyVO;
@@ -15,8 +15,16 @@ public interface SurveyDAO {
 	List<SurveyResultVO> findBySNUM(int num);
 	void saveSurvey(SurveyVO vo);
 	void saveSurveyContentList(List<SurveyContentVO> list);
-	void incrementSurveyCount(@Param("subcode") int subcode,
-			@Param("surveytype") String surveytype);
-}
+	void finishSurvey(int snum);
+	void deleteSurvey(int snum);
 
+	void incrementSurveyCount(@Param("snum") int snum,
+							  @Param("surveytype") String surveytype);
+
+	int hasVoted(@Param("snum") int snum,
+				 @Param("mnum") int mnum);
+
+	void insertVoteHistory(@Param("snum") int snum,
+						   @Param("mnum") int mnum);
+}
 

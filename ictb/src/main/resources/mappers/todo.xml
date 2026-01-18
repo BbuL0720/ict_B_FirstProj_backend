@@ -29,7 +29,15 @@
     #{item}
   </foreach>
 </select>
-  
+
+ <select id="hometodo" parameterType="string" resultType="map">
+  SELECT TNUM,DESCRIPTION, TO_CHAR(TDATE, 'YYYY-MM-DD') AS TDATE
+  FROM todo
+  WHERE tid = #{tid}
+  AND TRUNC(TDATE) = TRUNC(SYSDATE)
+  ORDER BY TDATE DESC
+  FETCH FIRST 3 ROWS ONLY
+ </select>
   
   
  

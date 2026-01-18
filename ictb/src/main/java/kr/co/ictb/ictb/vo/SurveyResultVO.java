@@ -9,13 +9,15 @@ import lombok.Setter;
 @Setter
 @Getter
 public class SurveyResultVO {
-	//list 출력용
-	private int surveyNum;
-	private String surveySub;
-	private int surveyCode;
-	private String surveyDate;
-	private int subCode;
-	private String surveytype;
-	private String surveytitle;
-	private int surveycnt;
+    //list 출력용
+    private int surveyNum;
+    private int suveyMnum;
+    private String surveySub;
+    private String surveyFin;
+    private int surveyCode;
+    private String surveyDate;
+    private int subCode;
+    private String surveytype;
+    private String surveytitle;
+    private int surveycnt;
 }
