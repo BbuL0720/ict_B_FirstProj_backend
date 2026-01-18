@@ -31,12 +31,18 @@
 </select>
 
  <select id="hometodo" parameterType="string" resultType="map">
-  SELECT TNUM,DESCRIPTION, TO_CHAR(TDATE, 'YYYY-MM-DD') AS TDATE
-  FROM todo
-  WHERE tid = #{tid}
-  AND TRUNC(TDATE) = TRUNC(SYSDATE)
-  ORDER BY TDATE DESC
-  FETCH FIRST 3 ROWS ONLY
+SELECT TNUM, DESCRIPTION, TDATE
+FROM (
+    SELECT TNUM,
+           DESCRIPTION,
+           TO_CHAR(TDATE, 'YYYY-MM-DD') AS TDATE
+    FROM todo
+    WHERE tid = #{tid}
+      AND TRUNC(TDATE) = TRUNC(SYSDATE)
+    ORDER BY TDATE DESC
+)
+WHERE ROWNUM BETWEEN 1 AND 3
+
  </select>
   
   

@@ -171,6 +171,16 @@
 	</insert>
 
 	<select id="homelost" resultType="map">
-		SELECT  TITLE,LNUM ,to_char(ldate, 'YYYY-MM-DD')as ldate FROM lost WHERE CATEGORY =  'lost' ORDER BY LDATE DESC FETCH FIRST 4 ROWS ONLY
+	SELECT TITLE, LNUM, ldate
+FROM (
+    SELECT TITLE,
+           LNUM,
+           TO_CHAR(ldate, 'YYYY-MM-DD') AS ldate
+    FROM lost
+    WHERE CATEGORY = 'lost'
+    ORDER BY LDATE DESC
+)
+WHERE ROWNUM BETWEEN 1 AND 4
+
 	</select>
 </mapper>

@@ -59,7 +59,17 @@
  	</delete>
 
 	<select id="homeboard" resultType="map">
-		SELECT BNUM, TITLE ,to_char(udate, 'YYYY-MM-DD')as udate FROM BOARD WHERE CATEGORY =  'free' ORDER BY UDATE DESC FETCH FIRST 4 ROWS ONLY
+SELECT BNUM, TITLE, udate
+FROM (
+    SELECT BNUM,
+           TITLE,
+           TO_CHAR(udate, 'YYYY-MM-DD') AS udate
+    FROM BOARD
+    WHERE CATEGORY = 'free'
+    ORDER BY UDATE DESC
+)
+WHERE ROWNUM BETWEEN 1 AND 4
+
 	</select>
 
  </mapper>
