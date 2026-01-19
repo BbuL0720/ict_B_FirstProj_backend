@@ -20,7 +20,7 @@ WHERE req_id = #{req_id}
 </update>
 
 <select id="getPending" resultType="map">
-select m.mname as "mname", fr.FRID AS "frid", fr.REQ_ID AS "req_id" ,fr.RECEIVER_ID AS "RECEIVER_ID", fr.STATUS AS "status",to_char(fr.FRDATE, 'YYYY-MM-DD') AS "frdate" FROM FRIEND_REQ fr, MEMBER m
+select m.mname as "mname", fr.FRID AS "frid", fr.REQ_ID AS "req_id" ,fr.RECEIVER_ID AS "receiver_id", fr.STATUS AS "status",to_char(fr.FRDATE, 'YYYY-MM-DD') AS "frdate" FROM FRIEND_REQ fr, MEMBER m
 WHERE fr.req_id = m.MID and receiver_id = #{mid} and status = 'pending'
 </select>
 
