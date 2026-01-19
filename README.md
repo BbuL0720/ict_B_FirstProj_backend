@@ -149,5 +149,50 @@ CREATE TABLE diarypages (
     CONTENT VARCHAR2(600),      -- 해당 페이지의 일기 본문 내용
     CONSTRAINT diarypages_dnum_FK FOREIGN KEY(dnum) REFERENCES diarylist(num) ON DELETE CASCADE
 );
+
+/*******************************************************************************
+ * 4. 설문 조사 시스템 (Survey System)
+ *******************************************************************************/
+
+-- [SURVEY] 설문 조사 관리
+CREATE TABLE SURVEY(
+    snum NUMBER CONSTRAINT survey_num_pk PRIMARY key, -- 설문 고유 번호
+    mnum NUMBER,                                   -- 만든이 회원 번호
+    code NUMBER,                                   -- 설문 분류 코드
+    fin VARCHAR2(20),                              -- 설문 종료 여부
+    sdate DATE,                                    -- 설문 시작일/등록일
+    sub VARCHAR2(255),                             -- 설문 질문
+    CONSTRAINT lost_mnum_fk FOREIGN KEY (mnum) REFERENCES MEMBER(mnum) ON DELETE CASCADE
+);
+
+-- 설문 번호 자동 생성을 위한 시퀀스
+CREATE SEQUENCE survey_seq INCREMENT BY 1 START WITH 1;
+
+
+-- [surveycontent] 설문 문항 및 개별 항목 상세 관리 (1:N)
+CREATE TABLE surveycontent(
+    subcode NUMBER(19) NOT null,                   -- 소속된 설문 번호 (FK)
+    surveycnt NUMBER(10),                          -- 해당 항목의 득표 수
+    surveytitle VARCHAR2(255),                     -- 질문 내용
+    surveytype VARCHAR2(255),                      -- 문항 타입 (객관식, 주관식 등)
+    CONSTRAINT surveycontent_surveycontent_fk FOREIGN KEY (subcode) REFERENCES survey(snum) ON DELETE CASCADE
+);
+
+
+-- [survey_history] 사용자의 설문 참여 이력 및 중복 투표 방지
+CREATE TABLE survey_history (
+    hnum NUMBER CONSTRAINT survey_history_pk PRIMARY key, -- 참여 이력 고유 번호
+    snum NUMBER NOT NULL,                          -- 참여한 설문 번호
+    mnum NUMBER NOT NULL,                          -- 참여한 회원 번호
+    vote_date DATE DEFAULT SYSDATE,                -- 투표 일시
+    CONSTRAINT survey_history_snum_fk FOREIGN KEY (snum) REFERENCES SURVEY(snum) ON DELETE cascade,
+    CONSTRAINT survey_history_mnum_fk FOREIGN KEY (mnum) REFERENCES MEMBER(mnum) ON DELETE CASCADE,
+    CONSTRAINT survey_history_unique UNIQUE(snum, mnum) -- 동일 설문에 대한 중복 참여 방지
+);
+
+-- 참여 이력 번호 자동 생성을 위한 시퀀스
+CREATE SEQUENCE survey_history_seq INCREMENT BY 1 START WITH 1;
+
+
 ```
 </details>
