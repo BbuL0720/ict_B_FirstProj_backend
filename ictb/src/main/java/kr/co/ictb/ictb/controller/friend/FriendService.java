@@ -1,6 +1,7 @@
 package kr.co.ictb.ictb.controller.friend;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,7 +21,11 @@ public class FriendService {
 	public void sendRequest(String from , String to) {
 		friendRequestDao.sendRequest(from, to);
 	}
-	public List<FriendRequestVO> getPendingRequests(String mid){
+	public void updateRequest(String from , String to) {
+		friendRequestDao.updateRequest(from, to);
+	}
+	
+	public List<Map<String,Object>> getPendingRequests(String mid){
 		return friendRequestDao.getPending(mid);
 	}
 	public void respond(Long mid , String action) {

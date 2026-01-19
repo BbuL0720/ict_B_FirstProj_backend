@@ -31,11 +31,16 @@ public class FriendController {
 		MemberVO loginMember = (MemberVO) session.getAttribute("loginMember");
 		String receiverId = body.get("receiverId");
 		System.out.println(loginMember.getMid());
-		friendService.sendRequest(loginMember.getMid(),receiverId);
+		try {
+			friendService.sendRequest(loginMember.getMid(),receiverId);
+		} catch (Exception e) {
+			System.out.println("오류");
+			friendService.updateRequest(loginMember.getMid(), receiverId);
+		}
 		return ResponseEntity.ok("친구 요청 완료");
 	}
 	@GetMapping("/incoming")
-	public List<FriendRequestVO> getIncomingRequests(HttpSession session){
+	public List<Map<String,Object>> getIncomingRequests(HttpSession session){
 		MemberVO loginMember = (MemberVO) session.getAttribute("loginMember");
 		return friendService.getPendingRequests(loginMember.getMid());
 	}

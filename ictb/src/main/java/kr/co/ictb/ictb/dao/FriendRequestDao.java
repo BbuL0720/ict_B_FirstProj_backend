@@ -1,6 +1,7 @@
 package kr.co.ictb.ictb.dao;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -14,7 +15,9 @@ public interface FriendRequestDao {
 	
 	void sendRequest(@Param("req_id") String reqId , @Param("receiver_id") String receiverId);
 	
-	List<FriendRequestVO> getPending(@Param("mid") String mid);
+	void updateRequest(@Param("req_id") String reqId , @Param("receiver_id") String receiverId);
+	
+	List<Map<String,Object>> getPending(@Param("mid") String mid);
 	
 	void updateStatus(@Param("frid") Long frid , @Param("status") String status);
 	

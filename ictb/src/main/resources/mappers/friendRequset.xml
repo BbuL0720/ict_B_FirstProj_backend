@@ -5,12 +5,23 @@
 <select id="selectAllExceptMe" resultType="memvo">
 select * from member where mid !=#{mid}
 </select>
+
 <insert id="sendRequest">
 insert into friend_req (frid,req_id,receiver_id) values(friend_req_seq.nextval,#{req_id},#{receiver_id})
 </insert>
 
-<select id="getPending" resultType="frvo">
-select * from friend_req where receiver_id = #{mid} and status = 'pending'
+<update id="updateRequest">
+UPDATE friend_req
+SET status = 'pending',
+    frdate = SYSDATE
+WHERE req_id = #{req_id}
+  AND receiver_id = #{receiver_id}
+  AND status = 'rejected'
+</update>
+
+<select id="getPending" resultType="map">
+select m.mname as "mname", fr.FRID AS "frid", fr.REQ_ID AS "req_id" ,fr.RECEIVER_ID AS "RECEIVER_ID", fr.STATUS AS "status",to_char(fr.FRDATE, 'YYYY-MM-DD') AS "frdate" FROM FRIEND_REQ fr, MEMBER m
+WHERE fr.req_id = m.MID and receiver_id = #{mid} and status = 'pending'
 </select>
 
 <update id="updateStatus">
