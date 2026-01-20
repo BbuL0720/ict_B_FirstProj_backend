@@ -40,7 +40,7 @@ public class DiaryController {
 			for (MultipartFile file : images) {
 				String Filename = file.getOriginalFilename();
 				StringBuilder path = new StringBuilder();
-				path.append(uploadDir).append("/imgfile/diary/").append(Filename);
+				path.append(uploadDir).append("/diary/").append(Filename);
 				File serverFile = new File(path.toString());
 				file.transferTo(serverFile); // 예외발생 가능성 여기서 생김
 				DiaryPageVO dpvo = new DiaryPageVO();

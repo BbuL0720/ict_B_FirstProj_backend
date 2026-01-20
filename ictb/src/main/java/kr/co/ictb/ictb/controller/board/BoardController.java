@@ -90,7 +90,7 @@ public class BoardController {
 				String oriFn = mf.getOriginalFilename(); // 이미지 이름만 일단 뽑아두기
 
 				StringBuilder path = new StringBuilder(); // (문자열 조립 객체)
-				path.append(filepath).append("\\imgfile\\board\\").append(oriFn); // 문자열 조합해서 새 이미지명부터 완성
+				path.append(filepath).append("\\board\\").append(oriFn); // 문자열 조합해서 새 이미지명부터 완성
 
 				File f = new File(path.toString()); // 새 이미지명으로 빈 파일 하나 제작
 				mf.transferTo(f); // 기존 이미지 자체를 새 파일에 복사
@@ -129,7 +129,7 @@ public class BoardController {
 				String oriFn = mf.getOriginalFilename();
 
 				StringBuilder path = new StringBuilder();
-				path.append(filepath).append("\\imgfile\\board\\").append(oriFn);
+				path.append(filepath).append("\\board\\").append(oriFn);
 
 				File f = new File(path.toString());
 				mf.transferTo(f);
