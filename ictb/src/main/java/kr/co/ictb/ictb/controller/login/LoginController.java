@@ -91,20 +91,21 @@ public class LoginController {
 		private String cancelUrl = "/ap/rest/auth/cancel";
 
 		@PostMapping("/dologin")
-		public String doLogin(HttpSession session, @RequestBody MemberVO vo) {
-		    Map<String, Object> result = loginService.loginCheck(vo);
+		        public String doLogin(HttpSession session, @RequestBody MemberVO vo) {
+		            Map<String, Object> result = loginService.loginCheck(vo);
 
-		    if (result != null && result.get("CNT") != null) {
-		        int cnt = ((Number) result.get("CNT")).intValue();
-		        if (cnt == 1) {
-		            vo.setMname(result.get("MNAME").toString());
-		            vo.setColor(result.get("COLOR").toString());
-		            session.setAttribute("loginMember", vo);
-		            return "success";
+		            if (result != null && result.get("CNT") != null) {
+		                int cnt = ((Number) result.get("CNT")).intValue();
+		                if (cnt == 1) {
+		                    vo.setMnum(Integer.parseInt(String.valueOf(result.get("MNUM"))));
+		                    vo.setMname(result.get("MNAME").toString());
+		                    vo.setColor(result.get("COLOR").toString());
+		                    session.setAttribute("loginMember", vo);
+		                    return "success";
+		                }
+		            }
+		            return "fail";
 		        }
-		    }
-		    return "fail";
-		}
 
 
 	@GetMapping("/dologout")
