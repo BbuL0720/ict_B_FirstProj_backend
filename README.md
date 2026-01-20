@@ -100,6 +100,7 @@ CREATE TABLE lost_comments(
     CONSTRAINT lost_comments_mnum_fk FOREIGN KEY(mnum) REFERENCES MEMBER(mnum) ON DELETE CASCADE
 );
 
+CREATE SEQUENCE lost_comm_seq INCREMENT BY 1 START WITH 1;
 
 /*******************************************************************************
  * 4. 부가 서비스 (Social & Utility)
@@ -152,7 +153,6 @@ CREATE TABLE diarylist (
     udate DATE,                                                   -- 다이어리 작성/수정일
     CONSTRAINT diarylist_writer_FK FOREIGN KEY(writer) REFERENCES MEMBER(mid)
 );
-
 -- diarylist의 num 번호 생성을 위한 시퀀스
 CREATE SEQUENCE diarylist_seq INCREMENT BY 1 START WITH 1;
 
