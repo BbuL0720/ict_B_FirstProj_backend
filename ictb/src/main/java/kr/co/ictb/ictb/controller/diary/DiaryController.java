@@ -39,7 +39,9 @@ public class DiaryController {
 			int i = 0;
 			for (MultipartFile file : images) {
 				String Filename = file.getOriginalFilename();
-				File serverFile = new File(uploadDir + "/diary/", Filename);
+				StringBuilder path = new StringBuilder();
+				path.append(uploadDir).append("/imgfile/diary/").append(Filename);
+				File serverFile = new File(path.toString());
 				file.transferTo(serverFile); // 예외발생 가능성 여기서 생김
 				DiaryPageVO dpvo = new DiaryPageVO();
 				dpvo.setImagename(Filename);
@@ -60,12 +62,18 @@ public class DiaryController {
 		int cPage = Integer.parseInt(page);
 		int totalCnt = diaryService.totalCount();
 		int totalPage = (int) Math.ceil(totalCnt / (double) 6);
+		if (totalPage == 0) {
+			totalPage = 1;
+		}
 		if (cPage > totalPage) {
 			cPage = totalPage;
 		}
 		int totalBlock = (int) Math.ceil(totalPage / (double) 5);
-		int startPage = (cPage-1)*5 + 1;
-		int endPage = cPage*5;
+		if (totalBlock == 0) {
+			totalBlock = 1;
+		}
+		int startPage = ((cPage-1)/5)*5 + 1;
+		int endPage = ((cPage-1)/5+1)*5;
 		if (endPage > totalPage) {
 			endPage = totalPage;
 		}

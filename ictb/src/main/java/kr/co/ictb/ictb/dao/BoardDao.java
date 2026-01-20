@@ -12,7 +12,9 @@ public interface BoardDao {
 	List<BoardVO> list(Map<String, String> map);
 	BoardVO detail(int num);
 	void add(BoardVO vo);
-	void delete(int num);
 	int total(Map<String, String> map);
+	void deleteBoard(int num);
+	void deleteComments(int num);
+	void update(BoardVO vo);
 	List<Map<String, Object>> homeboard();
 }

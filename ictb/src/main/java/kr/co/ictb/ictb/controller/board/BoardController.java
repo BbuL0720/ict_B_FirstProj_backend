@@ -6,8 +6,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.javassist.expr.Instanceof;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -34,8 +37,8 @@ public class BoardController {
 
 	@RequestMapping("/list")
 	public Map<String, Object> boardList(@RequestParam Map<String, String> paramMap) {	// 여기서 유저는 paramMap에 현재 페이지,
-																						// 검색기능변수(searchType,
-																						// searchValue) 등등 받아옴
+		// 검색기능변수(searchType,
+		// searchValue) 등등 받아옴
 		int page = Integer.parseInt(paramMap.get("page")); // 유저 현재 페이지
 		int totalCnt = boardService.total(paramMap); // 총 게시물 수(유저 있는 게시판에서)
 		int totalPage = (int) Math.ceil(totalCnt / (double) 10); // 총 페이지 수(우린 페이지마다 게시글 10개)
@@ -87,7 +90,7 @@ public class BoardController {
 				String oriFn = mf.getOriginalFilename(); // 이미지 이름만 일단 뽑아두기
 
 				StringBuilder path = new StringBuilder(); // (문자열 조립 객체)
-				path.append(filepath).append("/board/").append(oriFn); // 문자열 조합해서 새 이미지명부터 완성
+				path.append(filepath).append("\\imgfile\\board\\").append(oriFn); // 문자열 조합해서 새 이미지명부터 완성
 
 				File f = new File(path.toString()); // 새 이미지명으로 빈 파일 하나 제작
 				mf.transferTo(f); // 기존 이미지 자체를 새 파일에 복사
@@ -99,7 +102,7 @@ public class BoardController {
 		boardService.add(vo); // DB에 드디어 업로드
 		return ResponseEntity.ok().body("게시글 작성 성공");
 	}
-	
+
 	@GetMapping("/delete")
 	public ResponseEntity<?> boardDelete(@RequestParam("num") int num) {
 		boardService.delete(num);
@@ -117,8 +120,31 @@ public class BoardController {
 		return ResponseEntity.ok().body("댓글 작성 성공");
 	}
 
+	@PostMapping("/update")
+	public ResponseEntity<?> boardUpdate(@RequestParam("num") int num, BoardVO vo){
+		vo.setBnum(num);
+		if (vo.getMfile() != null) {
+			try {
+				MultipartFile mf = vo.getMfile();
+				String oriFn = mf.getOriginalFilename();
+
+				StringBuilder path = new StringBuilder();
+				path.append(filepath).append("\\imgfile\\board\\").append(oriFn);
+
+				File f = new File(path.toString());
+				mf.transferTo(f);
+				vo.setImage(oriFn);
+			} catch (IllegalStateException | IOException e) {
+				e.printStackTrace();
+			}
+		}
+		boardService.update(vo);
+		return ResponseEntity.ok().body("작성글 업데이트 완료");
+	}
+
 	@PostMapping("/homeboard")
 	public List<Map<String, Object>> homeboard() {
 		return boardService.homeboard();
 	}
+
 }
