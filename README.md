@@ -22,6 +22,8 @@ CREATE TABLE MEMBER (
     CONSTRAINT MEMBER_num_pk   PRIMARY KEY (mnum),
     CONSTRAINT member_id_UQ    UNIQUE (mid)
 );
+CREATE SEQUENCE MEMBER_num_seq INCREMENT BY 1 START WITH 1;--각 행의 고유한 번호를 주기 위해 시퀀스 생성
+
 
 /*******************************************************************************
  * 2. 커뮤니티 및 소통 시스템 (Community & Board)
@@ -38,6 +40,7 @@ CREATE TABLE board(
     CONTENT VARCHAR2(600) NOT NULL,                -- 게시글 본문
     CONSTRAINT board_writer_FK FOREIGN KEY(writer) REFERENCES MEMBER(mid)
 );
+ CREATE SEQUENCE board_num_seq START WITH 1 INCREMENT BY 1;
 
 -- [board_comments] 게시글에 대한 댓글 테이블
 CREATE TABLE board_comments(
@@ -49,6 +52,8 @@ CREATE TABLE board_comments(
     CONSTRAINT board_comments_board_writer_fk FOREIGN KEY(writer) REFERENCES MEMBER(mid),
     CONSTRAINT board_comments_board_bnum_fk FOREIGN KEY (bnum) REFERENCES BOARD(bnum)
 );
+
+CREATE SEQUENCE board_comments_num_seq START WITH 1 INCREMENT BY 1; 
 
 
 /*******************************************************************************
@@ -73,6 +78,7 @@ CREATE TABLE lost(
     ldate DATE,                                    -- 게시글 등록 시각
     CONSTRAINT lost_code_fk FOREIGN KEY(mnum) REFERENCES MEMBER(mnum)
 );
+CREATE SEQUENCE lost_seq INCREMENT BY 1 START WITH 1;
 
 -- [lostimgs] 분실물의 외관 확인을 위한 다중 이미지 관리 (1:N)
 CREATE TABLE lostimgs(
@@ -80,6 +86,7 @@ CREATE TABLE lostimgs(
     imgname VARCHAR2(255),                         -- 저장된 이미지 경로 및 파일명
     CONSTRAINT lostimgsid_fk FOREIGN KEY(lostimgsid) REFERENCES LOST(lnum) ON DELETE CASCADE
 );
+CREATE SEQUENCE lost_comm_seq INCREMENT BY 1 START WITH 1;
 
 -- [lost_comments] 분실물 제보 및 소통을 위한 전용 댓글
 CREATE TABLE lost_comments(
@@ -110,6 +117,8 @@ CREATE TABLE friend_req(
     CONSTRAINT friend_uq UNIQUE (req_id, receiver_id) -- 동일 유저간 중복 요청 금지
 );
 
+CREATE SEQUENCE friend_req_seq START WITH 1 INCREMENT BY 1; --각 행의 고유한 번호를 주기 위해 시퀀스 생성
+
 -- [friend_req_log] 친구 요청에 대한 처리 이력 기록
 CREATE TABLE friend_req_log (
     log_id NUMBER NOT NULL PRIMARY KEY,            -- 로그 식별 번호
@@ -119,6 +128,8 @@ CREATE TABLE friend_req_log (
     CONSTRAINT log_to_request_fk FOREIGN KEY (friend_req_id) REFERENCES friend_req(frid) ON DELETE CASCADE
 );
 
+CREATE SEQUENCE friend_req_log_seq INCREMENT BY 1 START WITH 1;--각 행의 고유한 번호를 주기 위해 시퀀스 생성
+
 -- [todo] 사용자별 개인 할 일 목록 관리
 CREATE TABLE todo(
     tnum NUMBER NOT NULL PRIMARY KEY,              -- Todo 고유 번호
@@ -127,6 +138,9 @@ CREATE TABLE todo(
     description VARCHAR2(200) NOT NULL,            -- 할 일 상세 내용
     CONSTRAINT todo_tnum_FK FOREIGN KEY(tid) REFERENCES MEMBER(mid)
 );
+
+ CREATE SEQUENCE todo_num_seq INCREMENT BY 1 START WITH 1;
+ 
 /*******************************************************************************
  * 5. 다이어리 시스템 (Diary & Gallery)
  *******************************************************************************/

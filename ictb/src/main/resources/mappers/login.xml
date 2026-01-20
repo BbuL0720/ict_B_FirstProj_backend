@@ -5,7 +5,7 @@
 <mapper namespace="kr.co.ictb.ictb.dao.LoginDao">
   <!-- Login Check -->
   <select id="loginCheck" parameterType="memvo" resultType="map">
-	 SELECT mname,1 CNT FROM MEMBER WHERE mid=#{mid} AND PASSWORD=#{password}
+	 SELECT mname,color ,1 CNT FROM MEMBER WHERE mid=#{mid} AND PASSWORD=#{password} group by color,mname
   </select>
   <!-- Search for User Information -->
   <select id="getUserInfo" parameterType="memvo" resultType="memvo">
