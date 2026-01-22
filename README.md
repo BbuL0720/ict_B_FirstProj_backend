@@ -207,6 +207,16 @@ CREATE TABLE survey_history (
 -- 참여 이력 번호 자동 생성을 위한 시퀀스
 CREATE SEQUENCE survey_history_seq INCREMENT BY 1 START WITH 1;
 
+--AOP를 사용해서 로그인 정보 저장
+CREATE TABLE myloginlog(
+    num NUMBER CONSTRAINT myloginlogs_num_pk PRIMARY KEY,
+    idn VARCHAR2(50),
+    reip VARCHAR2(30),
+    uagent VARCHAR2(100),
+    status VARCHAR2(10),
+    sstime DATE DEFAULT SYSDATE,
+    CONSTRAINT myloginlogs_idn_fk FOREIGN KEY(idn) REFERENCES MEMBER(mid) 
+);
 
 ```
 </details>
