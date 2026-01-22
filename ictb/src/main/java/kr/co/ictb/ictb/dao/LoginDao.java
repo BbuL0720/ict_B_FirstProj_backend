@@ -2,6 +2,7 @@ package kr.co.ictb.ictb.dao;
 
 import java.util.Map;
 
+import kr.co.ictb.ictb.vo.MyLoginLoggerVO;
 import org.apache.ibatis.annotations.Mapper;
 import kr.co.ictb.ictb.vo.MemberVO;
 
@@ -34,4 +35,8 @@ public interface LoginDao {
 
 //  비밀번호 변경
 	void changePassword(MemberVO vo);
+
+    public void addLoginLoggin(MyLoginLoggerVO vo);
+
+    MyLoginLoggerVO getLoginLog();
 }

@@ -11,12 +11,12 @@ import kr.co.ictb.ictb.vo.MemberVO;
 
 @Service
 public class LoginService implements HandlerInterceptor {
-	@Autowired
-	private LoginDao loginDao;
-	
-	public Map<String, Object> loginCheck(MemberVO vo){
-		return loginDao.loginCheck(vo);
-	}
+    @Autowired
+    private LoginDao loginDao;
+
+    public Map<String, Object> loginCheck(MemberVO vo) {
+        return loginDao.loginCheck(vo);
+    }
 
     // Passwordless용 ID 조회
     public MemberVO findByMid(String mid) {

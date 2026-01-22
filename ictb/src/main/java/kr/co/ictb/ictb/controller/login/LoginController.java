@@ -14,6 +14,7 @@ import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 import javax.net.ssl.SSLContext;
 
+import kr.co.ictb.ictb.vo.MyLoginLoggerVO;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
@@ -130,6 +131,8 @@ public class LoginController {
 		
 		return ResponseEntity.ok("변경되었습니다");
 	}
+
+
 	@PostMapping("/signup")
 	public Map<String, Object> join(@RequestBody MemberVO userinfo) {
 
@@ -152,6 +155,11 @@ public class LoginController {
 
 	    return mapResult;
 	}
+	@PostMapping("/getLog")
+	public MyLoginLoggerVO getLoginLog() {
+		return dao.getLoginLog();
+	}
+
 	@PostConstruct
 	public void checkKey() {
 	    log.info("Passwordless serverKey length = {}", serverKey.length());

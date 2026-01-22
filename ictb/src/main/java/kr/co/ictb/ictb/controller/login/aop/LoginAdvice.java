@@ -52,40 +52,30 @@ public class LoginAdvice {
 //		logout 세션 삭제전에 => 로그 저장 == (before)
 //		두개 합치면 around
 	@Autowired
-	private MyLogDao myLogDao;
-	@Autowired
 	private LoginDao dao;
-	
+
 
 	private void createLoggin(String methodName, Object[] fd, ProceedingJoinPoint jp, String status) {
 		MyLoginLoggerVO lvo = new MyLoginLoggerVO();
-//		첫번쨰 매변수 등의 규칙을 정해놓으면(다른 매개변수와 같게 만들면) 배열의 index로 구분이 가능
 		if (fd[0] instanceof HttpSession && fd[1] instanceof HttpServletRequest) {
 			HttpSession session = (HttpSession) fd[0];
 			HttpServletRequest request = (HttpServletRequest) fd[1];
 			MemberVO vo = (MemberVO) session.getAttribute("loginMember");
-			
 			if (vo != null) { // 로그인 정보가 있으면
 				lvo.setIdn(vo.getMid());
 				lvo.setStatus(status);
 				lvo.setReip(request.getRemoteAddr());
 				String userAgent = request.getHeader("User-Agent");
 				String parsedAgent = UserAgentUtils.parseAgent(userAgent);
+				System.out.println("!@# "+parsedAgent);
 				lvo.setUagent(parsedAgent);
-				System.out.println("로그인 기록 : " + lvo);
-				System.out.println("IDN : " + lvo.getIdn());
-				System.out.println("Agent : " + lvo.getUagent());
-				System.out.println("reip : " + lvo.getReip());
-				System.out.println("status : " + lvo.getStatus());
-				System.out.println("-----------------------------------");
-				myLogDao.addLoginLoggin(lvo);
-
+				dao.addLoginLoggin(lvo);
 			}
 		}
 
 	}
 
-	@Around("execution(* kr.co.ictb.ictb.login.LoginController.doLog*(..))")
+	@Around("execution(* kr.co.ictb.ictb.controller.login.LoginController.doLog*(..))")
 	public String loginLogger(ProceedingJoinPoint jp) {
 //		해당 타겟의 메서드 dolog로 시작하는 메서드의 매개변수들을 배열로 받아온다.
 		Object[] fd = jp.getArgs();

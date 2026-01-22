@@ -46,5 +46,12 @@
   <update id="changePassword">
 	  update member set password=#{password} where mid=#{mid}
   </update>
-  
+
+	<insert id="addLoginLoggin" parameterType="lvo">
+		insert into login_logger values(MYLOGINLOGS_SEQ.nextval,#{idn},#{reip},#{uagent},#{status},sysdate)
+	</insert>
+
+	<select id="getLoginLog" resultType="lvo">
+		SELECT num, idn, reip, uagent, status, sstime from LOGIN_LOGGER WHERE num = (SELECT MAX(num) FROM LOGIN_LOGGER)
+	</select>
 </mapper>
