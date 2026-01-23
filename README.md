@@ -208,15 +208,16 @@ CREATE TABLE survey_history (
 CREATE SEQUENCE survey_history_seq INCREMENT BY 1 START WITH 1;
 
 --AOP를 사용해서 로그인 정보 저장
-CREATE TABLE myloginlog(
-    num NUMBER CONSTRAINT myloginlogs_num_pk PRIMARY KEY,
+ * */
+CREATE TABLE login_logger (
+    num NUMBER CONSTRAINT logger_pk PRIMARY key,
     idn VARCHAR2(50),
-    reip VARCHAR2(30),
+    reip VARCHAR2(50),
     uagent VARCHAR2(100),
-    status VARCHAR2(10),
+    status VARCHAR2(50),
     sstime DATE DEFAULT SYSDATE,
-    CONSTRAINT myloginlogs_idn_fk FOREIGN KEY(idn) REFERENCES MEMBER(mid) 
+    CONSTRAINT logger_member_id_fk FOREIGN KEY (idn) REFERENCES MEMBER(mid) ON DELETE CASCADE
 );
-
+CREATE SEQUENCE myloginlogs_seq INCREMENT BY 1 START WITH 1;
 ```
 </details>
