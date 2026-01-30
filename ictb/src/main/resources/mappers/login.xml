@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.co.ictb.ictb.dao.LoginDao">
+  <!-- Login Check -->
+  <select id="loginCheck" parameterType="memvo" resultType="map">
+  SELECT mnum,mname,color,1 CNT FROM MEMBER WHERE mid=#{mid} AND PASSWORD=#{password} group by mnum,mname,color
+  </select>
+  <!-- Search for User Information -->
+  <select id="getUserInfo" parameterType="memvo" resultType="memvo">
+		SELECT mid, password,mdate
+		FROM member
+		WHERE mid = #{mid}
+	</select>
+	<!-- Password Update -->
+	<update id="updatePassword">
+		UPDATE member
+		SET password=#{password}
+		WHERE mid = #{mid}
+	</update>
+	<!-- User Registration -->
+	<insert id="createUserInfo">
+		INSERT INTO member
+		VALUES(MEMBER_NUM_SEQ.nextval,#{mname},#{mid},#{password},#{email},sysdate)
+	</insert>
+	<!-- User Deletion -->
+	<delete id="withdrawUserInfo">
+		DELETE FROM member
+		WHERE mid = #{mid}
+	</delete>
+	
+	<!-- Password Change ==>적용 안한것
+	<update id="changepw">
+		UPDATE userinfo
+		SET pw = password('${pw}')
+		WHERE id = '${id}'
+	</update> -->
+  <select id="findByMid" parameterType="string"
+        resultType="memvo">
+    SELECT MID,
+           MNAME
+    FROM MEMBER
+    WHERE MID = #{mid}
+</select>
+  <update id="changePassword">
+	  update member set password=#{password} where mid=#{mid}
+  </update>
+
+	<insert id="addLoginLoggin" parameterType="lvo">
+		insert into login_logger values(MYLOGINLOGS_SEQ.nextval,#{idn},#{reip},#{uagent},#{status},sysdate)
+	</insert>
+
+	<select id="getLoginLog" resultType="lvo">
+		SELECT num, idn, reip, uagent, status, sstime from LOGIN_LOGGER WHERE num = (SELECT MAX(num) FROM LOGIN_LOGGER)
+	</select>
+</mapper>

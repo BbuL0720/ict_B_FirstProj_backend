@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ <mapper namespace="kr.co.ictb.ictb.dao.DiaryDao">
+	<insert id="addDiary" parameterType="dvo">
+		INSERT INTO DIARYLIST VALUES(diarylist_seq.NEXTVAL, #{writer}, SYSDATE)
+	</insert>
+
+	<insert id="addImgs" parameterType="java.util.List">
+		<selectKey keyProperty="id" resultType="int" order="BEFORE">
+			SELECT diarylist_seq.CURRVAL FROM dual
+		</selectKey>
+		<foreach collection="list" item="image" separator=" " open="insert all" close="select * from dual">
+			INTO diarypages VALUES(#{id}, #{image.imagename}, #{image.content})
+		</foreach>
+	</insert>
+
+	<select id="list" resultType="map" parameterType="int">
+		SELECT d.num, d.writer, d.udate, dp.image FROM (SELECT num, writer, TO_CHAR(udate, 'YYYY-MM-DD') AS udate, ROW_NUMBER() OVER(ORDER BY num DESC) AS rn FROM DIARYLIST) d, (SELECT dnum, image, content FROM (SELECT dnum, image, CONTENT, ROW_NUMBER() OVER(PARTITION BY dnum ORDER BY image) AS rn FROM DIARYPAGES) WHERE rn=1) dp WHERE d.num=dp.dnum AND d.rn BETWEEN (#{num}-1)*6+1 AND #{num}*6 ORDER BY num DESC
+	</select>
+
+	<select id="totalCount" resultType="int">
+		SELECT COUNT(*) FROM DIARYLIST
+	</select>
+
+	<select id="detail" resultType="map" parameterType="int">
+		SELECT d.num, d.writer, d.udate, dp.image, dp.content FROM (SELECT num, writer, TO_CHAR(udate, 'YYYY-MM-DD hh:mm:ss') AS udate FROM DIARYLIST WHERE num=#{num}) d, (SELECT image, content FROM DIARYPAGES WHERE dnum=#{num}) dp
+	</select>
+ </mapper>

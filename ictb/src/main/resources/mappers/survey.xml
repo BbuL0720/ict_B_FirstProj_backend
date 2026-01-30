@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  <mapper namespace="kr.co.ictb.ictb.dao.SurveyDAO">
+      <select id="maxSurveyNum" resultType="int">
+          SELECT  NVL(MAX(snum), 0) FROM SURVEY
+      </select>
+
+      <select id="findBySNUM" parameterType="int" resultType="surveyresultvo">
+          SELECT s.snum AS surveyNum,s.mnum AS sruveyMnum,s.sub AS surveySub,s.code AS surveyCode,s.sdate AS surveyDate,
+          s.fin AS surveyFin,sc.surveytype AS surveytype,sc.subcode AS subCode,sc.surveytitle AS surveytitle,sc.surveycnt AS surveycnt
+    	  FROM SURVEY s, SURVEYCONTENT sc WHERE s.snum = sc.SUBCODE AND s.snum = #{snum}
+    </select>
+
+    <insert id="saveSurvey" parameterType="surveyvo">
+        INSERT INTO SURVEY(snum, mnum, code, fin, sdate, sub)
+        VALUES (survey_seq.NEXTVAL, #{mnum}, #{code}, 'unfinished', SYSDATE, #{sub})
+    </insert>
+    <insert id="saveSurveyContentList" parameterType="java.util.List">
+        INSERT ALL 
+        <foreach collection="list" item="item">
+            INTO SURVEYCONTENT(SUBCODE, surveycnt, surveytitle, surveytype)
+            VALUES (survey_seq.CURRVAL, #{item.surveycnt}, #{item.surveytitle}, #{item.surveytype})
+        </foreach>
+        select * from dual
+    </insert>
+
+    <update id="incrementSurveyCount">
+        UPDATE SURVEYCONTENT SET surveycnt = surveycnt + 1 WHERE subcode=#{snum} AND surveytype=#{surveytype}
+    </update>
+    
+    <delete id="deleteSurvey" parameterType="int">
+    	DELETE FROM SURVEY WHERE snum = #{snum}
+    </delete>
+    
+    <update id="finishSurvey" parameterType="int">
+    	UPDATE SURVEY SET fin = 'finished' WHERE snum = #{snum}
+    </update>
+
+	<select id="hasVoted" resultType="int">
+		SELECT COUNT(*) FROM SURVEY_HISTORY WHERE snum = #{snum} AND mnum = #{mnum}
+	</select>
+	
+	<insert id="insertVoteHistory">
+		INSERT INTO SURVEY_HISTORY (hnum, snum, mnum, vote_date)
+		VALUES (survey_history_seq.NEXTVAL, #{snum}, #{mnum}, SYSDATE) 
+	</insert>
+  </mapper>

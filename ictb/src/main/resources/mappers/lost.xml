@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.co.ictb.ictb.dao.LostDao">
+	<insert id="lostAdd" parameterType="lostvo">
+		INSERT INTO LOST(lnum, mnum, title, category, CONTENTS, lphone, writer, litem, reip, status, itemcategory, losttime, lostloc, ldate) 
+		VALUES(lost_seq.NEXTVAL,#{mnum},#{title},#{category},#{contents},#{lphone},#{writer},#{litem},#{reip},'unsolved',#{itemcategory},
+		TO_DATE(#{losttime},'YYYY-MM-DD HH24:MI:SS'),#{lostloc},SYSDATE)
+	</insert>
+
+	<select id="lostList" parameterType="map" resultType="map">
+    SELECT 
+        l.lnum, l.mnum, l.title, l.category, TO_CHAR(l.contents) as contents, 
+        l.lphone, l.writer, l.litem, l.reip, l.status, l.itemcategory, TO_CHAR(l.losttime, 'YYYY-MM-DD AM HH:MI') AS ltime, l.lostloc, TO_CHAR(l.ldate, 'YYYY-MM-DD AM HH:MI') AS ldate, 
+        l.row_num, li.lostimgsid, li.imgname
+    FROM 
+        (
+            SELECT lnum, mnum, title, category, contents, lphone, writer, litem, reip, status, itemcategory, losttime, lostloc, ldate,
+                   ROW_NUMBER() OVER(ORDER BY lnum DESC) AS row_num
+            FROM LOST
+            <where>
+                <if test="searchValue != null and searchValue != ''">
+                    <choose>
+                        <when test="searchType == 1 or searchType == '1'">
+                            title LIKE '%' || #{searchValue} || '%' OR
+                            contents LIKE '%' || #{searchValue} || '%' OR
+                            writer LIKE '%' || #{searchValue} || '%' OR
+                            litem LIKE '%' || #{searchValue} || '%'
+                        </when>
+                        <when test="searchType == 2 or searchType == '2'">
+                            title LIKE '%' || #{searchValue} || '%'
+                        </when>
+                        <when test="searchType == 3 or searchType == '3'">
+                            contents LIKE '%' || #{searchValue} || '%'
+                        </when>
+                        <when test="searchType == 4 or searchType == '3'">
+                            title LIKE '%' || #{searchValue} || '%' OR
+                            contents LIKE '%' || #{searchValue} || '%'
+                        </when>
+                        <when test="searchType == 5 or searchType == '3'">
+                            writer LIKE '%' || #{searchValue} || '%'
+                        </when>
+                        <when test="searchType == 6 or searchType == '3'">
+                            litem LIKE '%' || #{searchValue} || '%'
+                        </when>
+                    </choose>
+                </if>
+                <if test="searchCategory != null and searchCategory != '' and searchCategory != '전체 품목'">
+                	<choose>
+                		<when test="searchCategory != '기타'">
+                			AND itemcategory = #{searchCategory}
+                		</when>
+                		<when test="searchCategory == '기타'">
+                			AND itemcategory != '전자기기'
+                			AND itemcategory != '지갑/현금'
+                			AND itemcategory != '카드/신분증'
+                			AND itemcategory != '도서/문구'
+                			AND itemcategory != '의류'
+                			AND itemcategory != '가방'
+                			AND itemcategory != '잡화/액세서리'
+                			AND itemcategory != '뷰티/화장품'
+                			AND itemcategory != '생활용품'
+                		</when>
+                	</choose>
+                </if>
+				<if test="location != null and location != '' and location != '전체 위치'">
+                	<choose>
+                		<when test="location != '기타'">
+                			AND lostloc = #{location}
+                		</when>
+                		<when test="location == '기타'">
+                			AND lostloc != '본관'
+                			AND lostloc != '중앙도서관'
+                			AND lostloc != '학생회관'
+                			AND lostloc != '공학관'
+                			AND lostloc != '인문관'
+                			AND lostloc != '경영관'
+                			AND lostloc != '체육관'
+                			AND lostloc != '기숙사'
+                		</when>
+                	</choose>
+                </if>
+                AND category = #{category}
+                </where>
+        ) l
+    LEFT OUTER JOIN 
+        (
+            SELECT lostimgsid, imgname 
+            FROM (
+                SELECT lostimgsid, imgname, 
+                       ROW_NUMBER() OVER(PARTITION BY lostimgsid ORDER BY imgname DESC) RN 
+                FROM lostimgs
+            ) 
+            WHERE RN=1
+        ) li 
+    ON l.lnum = li.lostimgsid WHERE l.row_num BETWEEN #{begin} AND #{end}
+    ORDER BY l.lnum DESC
+</select>
+		<select id="lostTotalCount" resultType="int" parameterType="map">
+			SELECT COUNT(*) cnt FROM lost
+			 <where>
+			    <if test="searchValue != null and searchValue != ''">
+			        <choose>
+			            <when test="searchType == 1 or searchType == '1'">
+			                writer LIKE '%' || #{searchValue} || '%'
+			            </when>
+
+			            <when test="searchType == 2 or searchType == '2'">
+			                title LIKE '%' || #{searchValue} || '%'
+			            </when>
+
+			            <when test="searchType == 3 or searchType == '3'">
+			                contents LIKE '%' || #{searchValue} || '%'
+			            </when>
+			        </choose>
+			    </if>
+
+			    <if test="itemcategory != null and itemcategory != ''">
+			        AND itemcategory = #{itemcategory}
+			    </if>
+
+			    <if test="lostloc != null and lostloc != ''">
+			        AND lostloc = #{lostloc}
+			    </if>
+			</where>
+		</select>
+	
+	<select id="lostDetail" parameterType="int" resultType="map">
+		SELECT 
+        l.lnum, l.mnum, l.title, l.category, TO_CHAR(l.CONTENTS) as contents, l.lphone, l.writer,
+        l.litem, l.reip, l.status, l.itemcategory, 
+        TO_CHAR(l.losttime, 'YYYY-MM-DD AM HH:MI') AS losttime, 
+        l.lostloc, TO_CHAR(l.ldate, 'YYYY-MM-DD AM HH:MI') AS ldate, li.lostimgsid,
+        li.imgname 
+        FROM LOST l
+        LEFT JOIN LOSTIMGS li ON l.lnum = li.lostimgsid 
+        WHERE l.lnum = #{lnum}
+	</select>
+	
+	<delete id="lostDelete" parameterType="int">
+		DELETE FROM lost WHERE lnum = #{lnum}
+	</delete>
+	
+	<insert id="lostAddImg" parameterType="java.util.List">
+		<selectKey keyProperty="id" resultType="int" order="BEFORE">
+			SELECT lost_seq.currVal FROM dual
+		</selectKey>
+		<foreach collection="list" item="image" separator=" " open="insert all" close="select * from dual">
+			INTO lostimgs (lostimgsid, imgname) VALUES(#{id}, #{image.imgname})
+		</foreach>
+	</insert>
+	
+	<update id="lostUpdate" parameterType="lostvo">
+		UPDATE lost SET title = #{title}, contents = #{contents}, lphone = #{lphone}, litem = #{litem}, itemcategory = #{itemcategory},
+		losttime = TO_DATE(#{losttime}, 'YYYY-MM-DD HH24:MI:SS'), lostloc = #{lostloc}, ldate = SYSDATE WHERE lnum = #{lnum}
+	</update>
+	
+	<update id="lostStatusUpdate" parameterType="int">
+		UPDATE lost SET status = 'solved' WHERE lnum = #{lnum}
+	</update>
+	
+	<delete id="deleteLostImgs" parameterType="int">
+		DELETE FROM LOSTIMGS WHERE lostimgsid = #{lnum}
+	</delete>
+	
+	<insert id="insertLostImgsForUpdate" parameterType="map">
+		<foreach collection="list" item="image" separator=" " open="insert all" close="select * from dual">
+			INTO lostimgs (lostimgsid, imgname) VALUES(#{lnum}, #{image.imgname})
+		</foreach>
+	</insert>
+
+	<select id="homelost" resultType="map">
+	SELECT TITLE, LNUM, ldate
+FROM (
+    SELECT TITLE,
+           LNUM,
+           TO_CHAR(ldate, 'YYYY-MM-DD') AS ldate
+    FROM lost
+    WHERE CATEGORY = 'lost'
+    ORDER BY LDATE DESC
+)
+WHERE ROWNUM BETWEEN 1 AND 4
+
+	</select>
+</mapper>
